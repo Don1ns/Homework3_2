@@ -1,7 +1,6 @@
 package homework.homework3_2.services.impl;
 
 import homework.homework3_2.model.Ingredient;
-import homework.homework3_2.model.Recipe;
 import homework.homework3_2.services.IngredientService;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +18,30 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     public Ingredient getIngredient(int id) {
-        return INGREDIENTS.get(id);
+        Ingredient ingredient = INGREDIENTS.get(id);
+        if(ingredient != null){
+            return ingredient;
+        }
+        return null;
+    }
+    @Override
+    public Ingredient editIngredient(int id, Ingredient ingredient){
+        if (INGREDIENTS.containsKey(id)){
+            INGREDIENTS.put(id, ingredient);
+            return ingredient;
+        }
+        return null;
+    }
+    @Override
+    public boolean deleteIngredient(int id){
+        if (INGREDIENTS.containsKey(id)){
+            INGREDIENTS.remove(id);
+            return true;
+        }
+        return false;
+    }
+    @Override
+    public Map<Integer, Ingredient> getAllIngredients() {
+        return INGREDIENTS;
     }
 }
