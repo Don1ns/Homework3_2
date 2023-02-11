@@ -8,36 +8,36 @@ import java.util.Map;
 import java.util.TreeMap;
 @Service
 public class RecipeServiceImpl implements RecipeService {
-    private static int lastId = 0;
-    private static final Map<Integer, Recipe> RECIPES = new TreeMap<>();
+    private int lastId = 0;
+    private final Map<Integer, Recipe> recipes = new TreeMap<>();
     @Override
     public Recipe addRecipe(Recipe recipe) {
-        RECIPES.put(lastId++, recipe);
+        recipes.put(lastId++, recipe);
         return  recipe;
     }
 
     @Override
     public Recipe getRecipe(int id) {
-        return RECIPES.get(id);
+        return recipes.get(id);
     }
     @Override
     public Recipe editRecipe(int id, Recipe recipe){
-        if (RECIPES.containsKey(id)){
-            RECIPES.put(id, recipe);
+        if (recipes.containsKey(id)){
+            recipes.put(id, recipe);
             return recipe;
         }
         return null;
     }
     @Override
     public boolean deleteRecipe(int id){
-        if (RECIPES.containsKey(id)){
-            RECIPES.remove(id);
+        if (recipes.containsKey(id)){
+            recipes.remove(id);
             return true;
         }
         return false;
     }
     @Override
     public Map<Integer, Recipe> getAllRecipes() {
-        return RECIPES;
+        return recipes;
     }
 }
