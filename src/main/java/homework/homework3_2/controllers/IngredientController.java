@@ -4,6 +4,7 @@ import homework.homework3_2.model.Ingredient;
 import homework.homework3_2.services.IngredientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,10 +37,15 @@ public class IngredientController {
     @Operation(
             summary = "Получение ингредиента по id"
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Ингредиент получен"
-    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Ингредиент получен"
+    ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Ингредиент не найден")
+    })
     public ResponseEntity<Ingredient> getIngredient(@PathVariable int id){
         Ingredient ingredient = ingredientService.getIngredient(id);
         if(ingredient == null){
@@ -51,10 +57,15 @@ public class IngredientController {
     @Operation(
             summary = "Редактирование ингредиента по id"
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Ингредиент отредактирован"
-    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Ингредиент отредактирован"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Ингредиент не найден")
+    })
     public ResponseEntity<Ingredient> editIngredient(@PathVariable int id, @RequestBody Ingredient ingredient){
         Ingredient ingredient1 = ingredientService.editIngredient(id, ingredient);
         if(ingredient1 == null){
@@ -66,10 +77,15 @@ public class IngredientController {
     @Operation(
             summary = "Удаление ингредиента по id"
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Ингредиент удален"
-    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Ингредиент удален"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Ингредиент не найден")
+    })
     public ResponseEntity<Void> deleteIngredient(@PathVariable int id){
         if(ingredientService.deleteIngredient(id)){
             return ResponseEntity.ok().build();

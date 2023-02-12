@@ -4,6 +4,7 @@ import homework.homework3_2.model.Recipe;
 import homework.homework3_2.services.RecipeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,10 +37,15 @@ public class RecipeController {
     @Operation(
             summary = "Получение рецепта по id"
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Рецепт получен"
-    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Рецепт получен"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Рецепт не найден")
+    })
     public ResponseEntity<Recipe> getIngredient(@PathVariable int id){
         Recipe recipe = recipeService.getRecipe(id);
         if(recipe == null){
@@ -51,10 +57,15 @@ public class RecipeController {
     @Operation(
             summary = "Редактирование рецепта по id"
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Рецепт отредактирован"
-    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Рецепт отредактирован"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Рецепт не найден")
+    })
     public ResponseEntity<Recipe> editRecipe(@PathVariable int id, @RequestBody Recipe recipe){
         Recipe recipe1 = recipeService.editRecipe(id, recipe);
         if(recipe1 == null){
@@ -66,10 +77,15 @@ public class RecipeController {
     @Operation(
             summary = "Удаление рецепта по id"
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Рецепт удален"
-    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Рецепт удален"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Рецепт не найден")
+    })
     public ResponseEntity<Void> deleteRecipe(@PathVariable int id){
         if(recipeService.deleteRecipe(id)){
             return ResponseEntity.ok().build();
