@@ -2,7 +2,7 @@ package homework.homework3_2.services;
 
 import homework.homework3_2.model.Ingredient;
 
-import java.util.Map;
+import java.util.TreeMap;
 
 public interface IngredientService {
     Ingredient addIngredient(Ingredient ingredient);
@@ -12,5 +12,5 @@ public interface IngredientService {
 
     boolean deleteIngredient(int id);
 
-    Map<Integer, Ingredient> getAllIngredients();
+    TreeMap<Integer, Ingredient> getAllIngredients();
 }
