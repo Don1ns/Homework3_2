@@ -4,6 +4,7 @@ import homework.homework3_2.services.FileService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,6 +32,7 @@ public class FileServiceImpl implements FileService {
             throw new RuntimeException(e);
         }
     }
+    @Override
     public boolean cleanDataFile(String fileName){
         try {
             Files.deleteIfExists(Path.of(dataFilePath, fileName));
@@ -40,5 +42,9 @@ public class FileServiceImpl implements FileService {
             e.printStackTrace();
             return false;
         }
+    }
+    @Override
+    public File getDataFile(String fileName){
+        return new File(dataFilePath + "/" + fileName);
     }
 }

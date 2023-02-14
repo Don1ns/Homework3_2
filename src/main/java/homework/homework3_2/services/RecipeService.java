@@ -3,7 +3,7 @@ package homework.homework3_2.services;
 import homework.homework3_2.model.Recipe;
 
 
-import java.util.TreeMap;
+import java.util.Map;
 
 public interface RecipeService {
     Recipe addRecipe(Recipe recipe);
@@ -14,5 +14,5 @@ public interface RecipeService {
 
     boolean deleteRecipe(int id);
 
-    TreeMap<Integer, Recipe> getAllRecipes();
+    Map<Integer, Recipe> getAllRecipes();
 }

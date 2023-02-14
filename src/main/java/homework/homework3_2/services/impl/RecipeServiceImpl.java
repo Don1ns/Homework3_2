@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.Map;
 import java.util.TreeMap;
 @Service
 public class RecipeServiceImpl implements RecipeService {
@@ -17,7 +18,7 @@ public class RecipeServiceImpl implements RecipeService {
     private String dataFileName;
     private final FileService fileService;
     private int lastId = 0;
-    private TreeMap<Integer, Recipe> recipes = new TreeMap<>();
+    private Map<Integer, Recipe> recipes = new TreeMap<>();
 
     public RecipeServiceImpl(FileService fileService) {
         this.fileService = fileService;
@@ -51,12 +52,13 @@ public class RecipeServiceImpl implements RecipeService {
     public boolean deleteRecipe(int id){
         if (recipes.containsKey(id)){
             recipes.remove(id);
+            saveToFile();
             return true;
         }
         return false;
     }
     @Override
-    public TreeMap<Integer, Recipe> getAllRecipes() {
+    public Map<Integer, Recipe> getAllRecipes() {
         return recipes;
     }
 
@@ -65,7 +67,7 @@ public class RecipeServiceImpl implements RecipeService {
             String json = new ObjectMapper().writeValueAsString(recipes);
             fileService.saveToFile(json, dataFileName);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -75,7 +77,7 @@ public class RecipeServiceImpl implements RecipeService {
             recipes = new ObjectMapper().readValue(json, new TypeReference<>() {
             });
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }

@@ -19,7 +19,7 @@ public class IngredientServiceImpl implements IngredientService {
     private String dataFileName;
     private final FileService fileService;
     private int lastId = 0;
-    private TreeMap<Integer, Ingredient> ingredients = new TreeMap<>();
+    private Map<Integer, Ingredient> ingredients = new TreeMap<>();
 
     public IngredientServiceImpl(FileService fileService) {
         this.fileService = fileService;
@@ -59,13 +59,14 @@ public class IngredientServiceImpl implements IngredientService {
     public boolean deleteIngredient(int id) {
         if (ingredients.containsKey(id)) {
             ingredients.remove(id);
+            saveToFile();
             return true;
         }
         return false;
     }
 
     @Override
-    public TreeMap<Integer, Ingredient> getAllIngredients() {
+    public Map<Integer, Ingredient> getAllIngredients() {
         return ingredients;
     }
 
@@ -74,7 +75,7 @@ public class IngredientServiceImpl implements IngredientService {
             String json = new ObjectMapper().writeValueAsString(ingredients);
             fileService.saveToFile(json, dataFileName);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -84,7 +85,7 @@ public class IngredientServiceImpl implements IngredientService {
             ingredients = new ObjectMapper().readValue(json, new TypeReference<>() {
             });
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }
