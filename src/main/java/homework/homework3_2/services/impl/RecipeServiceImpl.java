@@ -10,6 +10,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Map;
 import java.util.TreeMap;
 @Service
@@ -61,7 +66,19 @@ public class RecipeServiceImpl implements RecipeService {
     public Map<Integer, Recipe> getAllRecipes() {
         return recipes;
     }
-
+    @Override
+    public Path createRecipesFile() throws IOException {
+        Path path = fileService.createTempFile("recipes");
+        for (Recipe recipe : recipes.values()) {
+            try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)){
+                writer.append(recipe.getTitle() + "\n" + "Время приготовления: "
+                        + recipe.getCookingTime() + " минут.\n"
+                        + "Ингредиенты: \n" + recipe.getIngredients()
+                        + "\nИнструкция приготовления:\n" + recipe.getCookingSteps() + "\n");
+            }
+        }
+        return path;
+    }
     private void saveToFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(recipes);

@@ -4,7 +4,6 @@ import homework.homework3_2.services.FileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -68,13 +67,10 @@ public class FilesController {
                     responseCode = "500",
                     description = "Что-то пошло не так")
     })
-    @PostMapping("/import_recipes")
+    @PostMapping(value = "/import_recipes", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> uploadRecipesDataFile(@RequestParam MultipartFile file){
-        fileService.cleanDataFile(recipesDataFileName);
-        File dataFile = fileService.getDataFile(recipesDataFileName);
-
-        try (FileOutputStream fos = new FileOutputStream(dataFile)){
-            IOUtils.copy(file.getInputStream(), fos);
+        try {
+            fileService.uploadFile(file, recipesDataFileName);
             return ResponseEntity.ok().build();
         } catch (IOException e){
             e.printStackTrace();
@@ -82,7 +78,7 @@ public class FilesController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
     @Operation(
-            summary = "Замена файла с рецептами на загруженный"
+            summary = "Замена файла с ингредиентами на загруженный"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -93,13 +89,10 @@ public class FilesController {
                     responseCode = "500",
                     description = "Что-то пошло не так")
     })
-    @PostMapping("/import_ingredients")
+    @PostMapping(value = "/import_ingredients", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> uploadIngredientsDataFile(@RequestParam MultipartFile file){
-        fileService.cleanDataFile(ingredientsDataFileName);
-        File dataFile = fileService.getDataFile(ingredientsDataFileName);
-
-        try (FileOutputStream fos = new FileOutputStream(dataFile)){
-            IOUtils.copy(file.getInputStream(), fos);
+        try {
+            fileService.uploadFile(file, ingredientsDataFileName);
             return ResponseEntity.ok().build();
         } catch (IOException e){
             e.printStackTrace();

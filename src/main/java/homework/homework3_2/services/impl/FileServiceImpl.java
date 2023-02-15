@@ -1,10 +1,13 @@
 package homework.homework3_2.services.impl;
 
 import homework.homework3_2.services.FileService;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,5 +49,22 @@ public class FileServiceImpl implements FileService {
     @Override
     public File getDataFile(String fileName){
         return new File(dataFilePath + "/" + fileName);
+    }
+
+    @Override
+    public void uploadFile(MultipartFile file, String fileName) throws IOException {
+        cleanDataFile(fileName);
+        File dataFile = getDataFile(fileName);
+        try (FileOutputStream fos = new FileOutputStream(dataFile)){
+            IOUtils.copy(file.getInputStream(), fos);
+        }
+    }
+    @Override
+    public Path createTempFile(String suffix){
+        try {
+            return Files.createTempFile(Path.of(dataFilePath), "temp", suffix);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
