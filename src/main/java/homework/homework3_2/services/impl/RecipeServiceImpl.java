@@ -3,6 +3,7 @@ package homework.homework3_2.services.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import homework.homework3_2.model.Ingredient;
 import homework.homework3_2.model.Recipe;
 import homework.homework3_2.services.FileService;
 import homework.homework3_2.services.RecipeService;
@@ -69,12 +70,17 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public Path createRecipesFile() throws IOException {
         Path path = fileService.createTempFile("recipes");
-        for (Recipe recipe : recipes.values()) {
-            try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)){
-                writer.append(recipe.getTitle() + "\n" + "Время приготовления: "
-                        + recipe.getCookingTime() + " минут.\n"
-                        + "Ингредиенты: \n" + recipe.getIngredients()
-                        + "\nИнструкция приготовления:\n" + recipe.getCookingSteps() + "\n");
+        try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)){
+            for (Recipe recipe : recipes.values()) {
+                int i = 1;
+                writer.append(recipe.getTitle()).append("\n").append("Время приготовления: ").append(String.valueOf(recipe.getCookingTime())).append(" минут.\n").append("Ингредиенты: \n");
+                for(Ingredient ingredient : recipe.getIngredients()){
+                    writer.append(" · ").append(ingredient.toString()).append("\n");
+                }
+                writer.append("Инструкция приготовления:\n");
+                for(String step : recipe.getCookingSteps()){
+                    writer.append(String.valueOf(i++)).append(". ").append(step).append("\n");
+                }
             }
         }
         return path;

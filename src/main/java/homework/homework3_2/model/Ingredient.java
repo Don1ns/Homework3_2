@@ -21,6 +21,6 @@ public class Ingredient {
 
     @Override
     public String toString() {
-        return name + " - " + amount + " " + measure + "\n";
+        return name + " - " + amount + " " + measure;
     }
 }
