@@ -2,6 +2,9 @@ package homework.homework3_2.services;
 
 import homework.homework3_2.model.Recipe;
 
+
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Map;
 
 public interface RecipeService {
@@ -14,4 +17,6 @@ public interface RecipeService {
     boolean deleteRecipe(int id);
 
     Map<Integer, Recipe> getAllRecipes();
+
+    Path createRecipesFile() throws IOException;
 }

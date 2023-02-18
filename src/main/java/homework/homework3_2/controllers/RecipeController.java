@@ -6,9 +6,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
 @RequestMapping("/recipe")
@@ -29,7 +36,7 @@ public class RecipeController {
             responseCode = "200",
             description = "Рецепт добавлен"
     )
-    public ResponseEntity<Recipe> addIngredient(@RequestBody Recipe recipe){
+    public ResponseEntity<Recipe> addRecipe(@RequestBody Recipe recipe){
         Recipe addedRecipe = recipeService.addRecipe(recipe);
         return ResponseEntity.ok(addedRecipe);
     }
@@ -46,7 +53,7 @@ public class RecipeController {
                     responseCode = "404",
                     description = "Рецепт не найден")
     })
-    public ResponseEntity<Recipe> getIngredient(@PathVariable int id){
+    public ResponseEntity<Recipe> getRecipe(@PathVariable int id){
         Recipe recipe = recipeService.getRecipe(id);
         if(recipe == null){
             return ResponseEntity.notFound().build();
@@ -103,5 +110,40 @@ public class RecipeController {
     public ResponseEntity<Map<Integer, Recipe>> getAllRecipes(){
         Map<Integer, Recipe> recipes = recipeService.getAllRecipes();
         return ResponseEntity.ok(recipes);
+    }
+    @GetMapping("/export")
+    @Operation(
+            summary = "Получение всех рецептов в виде txt-файла"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Файл получен"
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Нет контента"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Что-то пошло не так")
+    })
+    public ResponseEntity<Object> downloadAllRecipes(){
+        try {
+            Path path = recipeService.createRecipesFile();
+            if(Files.size(path) == 0){
+                return ResponseEntity.noContent().build();
+            }
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(path.toFile()));
+            return ResponseEntity.ok()
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .contentLength(Files.size(path))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"recipes.txt\"")
+                    .body(resource);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(e.toString());
+        }
+
     }
 }
